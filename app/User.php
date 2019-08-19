@@ -2,19 +2,28 @@
 
 namespace App;
 
+use App\Transformers\UserTransformer;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable,HasApiTokens,SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
     const VERIFIED_USER = '1';
     const UNVERIFIED_USER = '0';
 
     const ADMIN_USER = 'true';
     const REGULAR_USER = 'false';
+
+    protected $table = 'users';
+
+    public $transformer = UserTransformer::class;
 
     /**
      * The attributes that are mass assignable.
@@ -40,6 +49,21 @@ class User extends Authenticatable
         'remember_token',
         'verification_token'
     ];
+
+    public function setNameAttribute($name){
+
+        $this->attributes['name'] = strtolower($name);
+    }
+
+    public function getNameAttribute($name){
+
+         return ucwords($name);
+    }
+
+    public function setEmailAttribute($email){
+
+        $this->attributes['email'] = strtolower($email);
+    }
 
     /**
      * The attributes that should be cast to native types.

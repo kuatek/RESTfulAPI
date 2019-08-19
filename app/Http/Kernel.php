@@ -28,6 +28,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            'signature:X-Application-Name',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -38,7 +39,8 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            'signature:X-Application-Name',
+            'throttle:30,1',
             'bindings',
         ],
     ];
@@ -56,10 +58,15 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'client.credentials'=>\Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'scope'=>\Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
+        'scopes'=>\Laravel\Passport\Http\Middleware\CheckScopes::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'signature'=>\App\Http\Middleware\SignatureMiddleware::class,
+        'transform.input' =>\App\Http\Middleware\TransformInput::class,
     ];
 
     /**

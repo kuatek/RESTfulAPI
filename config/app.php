@@ -166,6 +166,9 @@ return [
          * Package Service Providers...
          */
 
+        Laravel\Passport\PassportServiceProvider::class,
+        Spatie\Fractal\FractalServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
