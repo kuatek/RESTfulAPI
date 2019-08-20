@@ -20,7 +20,9 @@ class CategoryBuyerController extends ApiController
      */
     public function index(Category $category)
     {
-       $buyers = $category->products()
+        $this->allowedAdminAction();
+
+        $buyers = $category->products()
             ->whereHas('transactions')
             ->with('transactions.buyer')
             ->get()
@@ -30,7 +32,7 @@ class CategoryBuyerController extends ApiController
             ->unique('id')
             ->values();
 
-       return $this->showAll($buyers);
+        return $this->showAll($buyers);
 
     }
 

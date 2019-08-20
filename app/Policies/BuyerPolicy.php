@@ -2,14 +2,14 @@
 
 namespace App\Policies;
 
+use App\Traits\AdminActions;
 use App\User;
 use App\Buyer;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BuyerPolicy
 {
-    use HandlesAuthorization;
-
+    use HandlesAuthorization, AdminActions;
 
     /**
      * Determine whether the user can view the buyer.
@@ -24,7 +24,7 @@ class BuyerPolicy
     }
 
     /**
-     * Determine whether the user can delete the buyer.
+     * Determine whether the user can purchase something.
      *
      * @param  \App\User  $user
      * @param  \App\Buyer  $buyer

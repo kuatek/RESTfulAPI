@@ -17,6 +17,9 @@ class UserController extends ApiController
         $this->middleware('auth:api')->except(['store','verify','resend']);
         $this->middleware('transform.input:'.UserTransformer::class)->only(['store','update']);
         $this->middleware('scope:manage-account')->only(['show','update']);
+        $this->middleware('can:view,user')->only(['show']);
+        $this->middleware('can:update,user')->only(['update']);
+        $this->middleware('can:delete,user')->only(['destroy']);
 
     }
 
@@ -27,6 +30,8 @@ class UserController extends ApiController
      */
     public function index()
     {
+        $this->allowedAdminAction();
+
         $users = User::all();
 
         return $this->showAll($users);
@@ -107,6 +112,9 @@ class UserController extends ApiController
         }
 
         if ($request->has('admin')){
+
+            $this->allowedAdminAction();
+
             if(!$user->isVerified()){
 
 
@@ -141,6 +149,14 @@ class UserController extends ApiController
 
         return $this->showOne($user);
 
+    }
+
+    public function me(Request $request)
+    {
+
+        $user = $request->user();
+
+        return $this->showOne($user);
     }
 
     public function verify($token){
